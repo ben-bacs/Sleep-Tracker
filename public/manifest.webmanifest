@@ -1,0 +1,17 @@
+{
+  "name": "AutoRest - Sleep Tracker & Analytics",
+  "short_name": "AutoRest",
+  "description": "Production-Grade Client-Side Sleep Tracker & Sleep Debt Analytics",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080A0F",
+  "theme_color": "#080A0F",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23FACC15'><rect width='512' height='512' rx='128' fill='%23141923'/><path d='M350 256 A120 120 0 1 1 200 136 A100 100 0 0 0 350 256z' fill='%23FACC15'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+
