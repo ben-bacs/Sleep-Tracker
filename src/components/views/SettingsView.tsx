@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { UserSettings, SleepSession } from '../../types/sleep';
+import { UserSettings, SleepSession, UserProfile } from '../../types/sleep';
 import {
   exportBackupJSON,
   importBackupJSON,
@@ -11,6 +11,9 @@ import { GuideModal } from '../common/GuideModal';
 interface SettingsViewProps {
   settings: UserSettings;
   sessions: SleepSession[];
+  profiles?: UserProfile[];
+  activeProfileId?: string;
+  onOpenProfileModal?: () => void;
   onSaveSettings: (settings: UserSettings) => void;
   onRefreshData: () => void;
   onLoadDemoData: () => void;
@@ -19,6 +22,9 @@ interface SettingsViewProps {
 export const SettingsView: React.FC<SettingsViewProps> = ({
   settings,
   sessions,
+  profiles = [],
+  activeProfileId,
+  onOpenProfileModal,
   onSaveSettings,
   onRefreshData,
   onLoadDemoData
@@ -27,9 +33,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [localSettings, setLocalSettings] = useState<UserSettings>(settings);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [showDeployGuide, setShowDeployGuide] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const activeProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
 
   const handleSavePreferences = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +91,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   };
 
   const handleReset = () => {
-    if (window.confirm('⚠️ WARNING: This will permanently delete all stored sleep sessions from this browser. Are you sure?')) {
+    if (window.confirm('⚠️ WARNING: This will permanently delete all stored sleep sessions for the current profile. Are you sure?')) {
       clearAllData();
       onRefreshData();
       setStatusMessage('All data reset to initial default.');
@@ -97,13 +104,23 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />
 
       {/* Header */}
-      <div className="pt-1 px-1">
-        <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">
-          SETTINGS
-        </h1>
-        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mt-0.5">
-          Preferences, Privacy & Data Portability
-        </p>
+      <div className="pt-1 px-1 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">
+            SETTINGS
+          </h1>
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mt-0.5">
+            Profiles, Goals & Tutorial
+          </p>
+        </div>
+
+        <button
+          onClick={() => setShowGuide(true)}
+          className="px-3 py-1.5 rounded-xl bg-stage-light/20 border border-stage-light/40 text-stage-light hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
+        >
+          <span>🎓</span>
+          <span>Tutorial</span>
+        </button>
       </div>
 
       {statusMessage && (
@@ -112,7 +129,71 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       )}
 
-      {/* User Sleep Goals Form */}
+      {/* 1. Active User Profile Card */}
+      <div className="bg-oled-card rounded-[22px] p-5 border border-oled-cardBorder shadow-card space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[15px] font-bold text-text-primary flex items-center gap-2">
+            <span>Current User Profile</span>
+            <span className="bg-stage-light/20 text-stage-light text-[10px] font-bold px-2 py-0.5 rounded-full">
+              Active
+            </span>
+          </h2>
+          {onOpenProfileModal && (
+            <button
+              onClick={onOpenProfileModal}
+              className="text-xs text-stage-light font-bold hover:underline"
+            >
+              Switch / Add User
+            </button>
+          )}
+        </div>
+
+        {activeProfile && (
+          <div className="p-3.5 bg-oled-darker rounded-2xl border border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-oled-card border border-white/15 flex items-center justify-center text-2xl shadow-inner">
+                {activeProfile.avatarEmoji || '👤'}
+              </div>
+              <div>
+                <span className="text-base font-extrabold text-white block">{activeProfile.name}</span>
+                <span className="text-[11px] text-text-secondary">
+                  Target: {activeProfile.targetSleepHours}h sleep • Baseline RHR: {activeProfile.baselineRHR} bpm
+                </span>
+              </div>
+            </div>
+
+            {onOpenProfileModal && (
+              <button
+                onClick={onOpenProfileModal}
+                className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-all"
+              >
+                Change ▾
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 2. Interactive Website Tutorial Card */}
+      <div className="bg-oled-card rounded-[22px] p-5 border border-stage-light/30 shadow-card space-y-3 bg-gradient-to-r from-stage-light/5 to-transparent">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[15px] font-bold text-white flex items-center gap-2">
+            <span>🎓 Website Guide & Legend</span>
+          </h2>
+        </div>
+        <p className="text-xs text-text-secondary">
+          New to AutoRest? Open our step-by-step interactive tutorial to learn how to log sleep, read the hypnogram colors, and calculate sleep cycles.
+        </p>
+
+        <button
+          onClick={() => setShowGuide(true)}
+          className="w-full py-3 bg-stage-light hover:bg-white text-black font-extrabold rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-2"
+        >
+          <span>🚀</span> Open Step-by-Step Interactive Tutorial
+        </button>
+      </div>
+
+      {/* 3. User Sleep Goals Form */}
       <form onSubmit={handleSavePreferences} className="bg-oled-card rounded-[22px] p-5 border border-oled-cardBorder shadow-card space-y-4">
         <h2 className="text-[15px] font-bold text-text-primary flex items-center justify-between">
           <span>Target Sleep Goals</span>
@@ -182,7 +263,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </button>
       </form>
 
-      {/* Data Backup & Export */}
+      {/* 4. Data Backup & Export */}
       <div className="bg-oled-card rounded-[22px] p-5 border border-oled-cardBorder shadow-card space-y-3.5">
         <h2 className="text-[15px] font-bold text-text-primary">
           Data Backup & Portability
@@ -228,20 +309,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
-      {/* Demo Data, Guide & Reset */}
+      {/* 5. Demo Data & Reset */}
       <div className="bg-oled-card rounded-[22px] p-5 border border-oled-cardBorder shadow-card space-y-3">
         <h2 className="text-[15px] font-bold text-text-primary">
-          Guide & Sample Data
+          Sample Data & Reset
         </h2>
 
         <div className="space-y-2">
-          <button
-            onClick={() => setShowGuide(true)}
-            className="w-full py-2.5 bg-stage-light/10 hover:bg-stage-light/20 text-stage-light border border-stage-light/30 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2"
-          >
-            <span>💡</span> Open Complete User Guide & Color Legend
-          </button>
-
           <button
             onClick={() => {
               onLoadDemoData();
@@ -256,39 +330,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             onClick={handleReset}
             className="w-full py-2.5 bg-stage-hr/10 hover:bg-stage-hr/20 text-stage-hr border border-stage-hr/30 font-bold rounded-xl text-xs transition-all"
           >
-            🗑️ Clear All Stored Data
+            🗑️ Clear Current User Data
           </button>
         </div>
-      </div>
-
-      {/* GitHub Pages Deployment Info */}
-      <div className="bg-oled-card rounded-[22px] p-5 border border-oled-cardBorder shadow-card space-y-2.5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-[15px] font-bold text-text-primary flex items-center gap-2">
-            <span>Free GitHub Pages Hosting</span>
-            <span className="bg-stage-awake/20 text-stage-awake text-[9px] font-bold px-2 py-0.5 rounded-full">
-              100% Free
-            </span>
-          </h2>
-          <button
-            onClick={() => setShowDeployGuide(!showDeployGuide)}
-            className="text-xs text-stage-light font-bold"
-          >
-            {showDeployGuide ? 'Hide' : 'View Guide'}
-          </button>
-        </div>
-
-        {showDeployGuide && (
-          <div className="bg-oled-darker p-3.5 rounded-xl border border-white/10 text-xs text-text-secondary space-y-2 font-mono">
-            <p className="text-white font-sans font-bold">How to host your own instance:</p>
-            <ol className="list-decimal list-inside space-y-1 text-[11px] font-sans">
-              <li>Push this repo to your GitHub account.</li>
-              <li>Go to <span className="text-white font-mono">Repository Settings &gt; Pages</span>.</li>
-              <li>Select <span className="text-white font-mono">GitHub Actions</span> or deploy from branch.</li>
-              <li>Your personal sleep tracker will be live at <span className="text-stage-light font-mono">https://username.github.io/repo/</span> with 0 server costs!</li>
-            </ol>
-          </div>
-        )}
       </div>
 
       {/* App Info Footer */}
@@ -299,4 +343,3 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     </div>
   );
 };
-

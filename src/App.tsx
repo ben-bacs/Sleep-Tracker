@@ -252,6 +252,9 @@ export const App: React.FC = () => {
           <SettingsView
             settings={settings}
             sessions={sessions}
+            profiles={profiles}
+            activeProfileId={activeProfileId}
+            onOpenProfileModal={() => setShowProfileModal(true)}
             onSaveSettings={handleSaveSettings}
             onRefreshData={() => {
               loadUserData(activeProfileId);
