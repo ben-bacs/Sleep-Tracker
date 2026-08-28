@@ -6,6 +6,7 @@ import {
   exportSessionsToCSV,
   clearAllData
 } from '../../services/storage';
+import { GuideModal } from '../common/GuideModal';
 
 interface SettingsViewProps {
   settings: UserSettings;
@@ -22,6 +23,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onRefreshData,
   onLoadDemoData
 }) => {
+  const [showGuide, setShowGuide] = useState(false);
   const [localSettings, setLocalSettings] = useState<UserSettings>(settings);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -91,6 +93,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
   return (
     <div className="space-y-4 pb-20 select-none">
+      {/* Complete User Guide Modal */}
+      <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />
+
       {/* Header */}
       <div className="pt-1 px-1">
         <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">
@@ -223,13 +228,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
-      {/* Demo Data & Reset */}
+      {/* Demo Data, Guide & Reset */}
       <div className="bg-oled-card rounded-[22px] p-5 border border-oled-cardBorder shadow-card space-y-3">
         <h2 className="text-[15px] font-bold text-text-primary">
-          Sample Data & Reset
+          Guide & Sample Data
         </h2>
 
         <div className="space-y-2">
+          <button
+            onClick={() => setShowGuide(true)}
+            className="w-full py-2.5 bg-stage-light/10 hover:bg-stage-light/20 text-stage-light border border-stage-light/30 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2"
+          >
+            <span>💡</span> Open Complete User Guide & Color Legend
+          </button>
+
           <button
             onClick={() => {
               onLoadDemoData();
@@ -237,7 +249,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             }}
             className="w-full py-2.5 bg-ring-gold/10 hover:bg-ring-gold/20 text-ring-gold border border-ring-gold/30 font-bold rounded-xl text-xs transition-all"
           >
-            ⚡ Load 14-Day AutoSleep Sample Dataset
+            ⚡ Reload 14-Day AutoSleep Sample Dataset
           </button>
 
           <button

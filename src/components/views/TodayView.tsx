@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SleepSession, UserSettings, SleepBankDebt, DailyReadiness } from '../../types/sleep';
 import { HypnogramChart } from '../common/HypnogramChart';
 import { DualRings, TripleRings } from '../common/ConcentricRings';
 import { formatHoursMinutes, AVAILABLE_TAGS } from '../../services/sleepEngine';
+import { GuideModal } from '../common/GuideModal';
 
 interface TodayViewProps {
   currentSession: SleepSession;
@@ -26,6 +27,9 @@ export const TodayView: React.FC<TodayViewProps> = ({
   hasPrevDate,
   hasNextDate
 }) => {
+  const [showGuide, setShowGuide] = useState(false);
+  const [showLegendDetails, setShowLegendDetails] = useState(false);
+
   // Target calculations
   const targetMinutes = settings.targetSleepHours * 60;
   const durationProgress = (currentSession.timeAsleepMinutes / targetMinutes) * 100;
@@ -50,6 +54,9 @@ export const TodayView: React.FC<TodayViewProps> = ({
 
   return (
     <div className="space-y-3.5 pb-20 select-none">
+      {/* Interactive Guide & Legend Modal */}
+      <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />
+
       {/* Top Header */}
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
@@ -82,25 +89,68 @@ export const TodayView: React.FC<TodayViewProps> = ({
           </p>
         </div>
 
-        {/* Edit / Quick Log Pencil Button */}
-        <button
-          onClick={() => onOpenLogger(currentSession)}
-          className="w-10 h-10 rounded-xl bg-oled-card border border-white/10 hover:border-white/25 flex items-center justify-center text-text-primary hover:text-white transition-all shadow-card active:scale-95"
-          title="Edit or Log Session"
-        >
-          <svg className="w-5 h-5 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-            <path d="m15 5 4 4" />
-          </svg>
-        </button>
+        {/* Header Action Buttons: Guide & Edit */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowGuide(true)}
+            className="h-10 px-3 rounded-xl bg-oled-card border border-stage-light/40 hover:border-stage-light text-stage-light hover:text-white flex items-center gap-1.5 transition-all shadow-card active:scale-95 text-xs font-bold"
+            title="How to use & Color Legend"
+          >
+            <span>💡</span>
+            <span>Guide</span>
+          </button>
+
+          <button
+            onClick={() => onOpenLogger(currentSession)}
+            className="w-10 h-10 rounded-xl bg-oled-card border border-white/10 hover:border-white/25 flex items-center justify-center text-text-primary hover:text-white transition-all shadow-card active:scale-95"
+            title="Edit or Log Session"
+          >
+            <svg className="w-5 h-5 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+              <path d="m15 5 4 4" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* CARD 1: Sleep Session Card (Hypnogram) */}
-      <div className="bg-oled-card rounded-[22px] p-4 border border-oled-cardBorder shadow-card backdrop-blur-md">
-        <h2 className="text-[17px] font-bold text-text-primary mb-1 tracking-tight">
-          Sleep Session
-        </h2>
+      <div className="bg-oled-card rounded-[22px] p-4 border border-oled-cardBorder shadow-card backdrop-blur-md space-y-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[17px] font-bold text-text-primary tracking-tight">
+            Sleep Session
+          </h2>
+          <button
+            onClick={() => setShowLegendDetails(!showLegendDetails)}
+            className="text-[11px] text-stage-light hover:underline font-semibold flex items-center gap-1"
+          >
+            <span>{showLegendDetails ? 'Hide' : 'Show'} Legend</span>
+            <span className="text-[9px]">ℹ️</span>
+          </button>
+        </div>
+
         <HypnogramChart session={currentSession} />
+
+        {/* Interactive Inline Quick Legend */}
+        {showLegendDetails && (
+          <div className="mt-2 pt-2.5 border-t border-white/10 grid grid-cols-2 gap-2 text-[11px] text-text-secondary bg-oled-darker/60 p-2.5 rounded-xl animate-in fade-in">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-stage-awake shrink-0" />
+              <span><strong>Awake (Green):</strong> Time awake / latency</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-stage-light shrink-0" />
+              <span><strong>Light (Cyan):</strong> Core memory rest</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-stage-deep shrink-0" />
+              <span><strong>Deep (Purple):</strong> Physical repair</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-stage-hr shrink-0" />
+              <span><strong>Heart (Red):</strong> Resting BPM curve</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ROW 2: Dual Column (Time Asleep + Sleep Rating) */}
