@@ -1,59 +1,69 @@
-# 🌙 AutoRest (Sleep Tracker)
+# 🌙 AutoRest — AutoSleep-Inspired Sleep Tracker (PWA)
 
-> A client-side, 100% private, zero-server-cost **Sleep Tracking & Sleep Debt Analytics Web App (PWA)** inspired by the iconic Apple Health / AutoSleep dark dashboard UI.
+> A client-side, 100% private, zero-server-cost **Sleep Tracking & Sleep Debt Analytics Web App (PWA)** deployable for free on **GitHub Pages**.  
+> Faithfully recreates the iconic Apple Health / AutoSleep dark OLED dashboard UI with multi-user support, sleep debt science, and procedural audio synthesis.
 
 [![Deploy to GitHub Pages](https://github.com/actions/deploy-pages/actions/workflows/deploy.yml/badge.svg)](https://github.com)
 
 ---
 
-## ✨ Features
+## 🌟 Key Highlights
 
-- **Iconic AutoSleep OLED Dashboard**: Dark slate cards (`#141923`), subtle background mechanical gear watermark, and full mobile responsiveness.
-- **Sleep Session Hypnogram**: Multi-stage vertical bars (`AWAKE` green, `LIGHT` sky blue, `STILL` cyan, and `DEEP` downward purple bars) overlaid with crimson resting heart rate line (`❤️ 64` bpm).
-- **Concentric Activity Rings**:
-  - Dual SVG rings (Gold duration vs goal + Coral sleep bank balance).
-  - Triple SVG rings (Amber duration + Green quality + Yellow restfulness) with glowing central score badge (`92`).
-- **Sleep Science Engine**:
-  - 14-Day Rolling Sleep Debt ("Sleep Bank %").
-  - 0–100 Composite Sleep Rating score.
-  - Physiological Readiness Recovery gauge.
-- **Sleep Clock & Cycle Companion**:
-  - 90-minute ultradian sleep cycle calculator (Sleep Now vs Wake At modes).
-  - Built-in procedural Web Audio sleep sound synthesizer (Pink Noise, Brown Noise, Rain, Ocean Waves) with fade-out timers.
-- **History & Correlation Analytics**:
-  - 4-Week calendar score heatmap.
-  - Stacked sleep architecture trends.
-  - Lifestyle tag correlation analytics (Caffeine, Alcohol, Melatonin, Late Workouts, etc.).
-- **100% Private & Local-First**:
-  - Data stored on device (`localStorage` + `IndexedDB`).
-  - 1-click JSON backup export & import.
-  - CSV spreadsheet export.
-  - Instant 14-day sample dataset preloader.
+- **Dark OLED Dashboard**: Deep slate containers (`#141923`), faint ambient mechanical gears watermark, and mobile-optimized responsiveness.
+- **Sleep Session Hypnogram**: Multi-stage vertical bars (`AWAKE` green, `LIGHT` sky blue, `STILL` cyan, `DEEP` downward purple bars) overlaid with crimson resting heart rate trendline (`❤️ 64` bpm) and live hover/touch tooltips.
+- **Concentric Activity Rings**: Dual and triple animated SVG rings tracking sleep duration, quality, efficiency, and sleep debt balance.
+- **Deep Sleep Science Engine**:
+  - 14-Day Rolling Sleep Debt ("Sleep Bank %") with surplus credits.
+  - 0–100 Composite Sleep Rating.
+  - Daily Physiological Readiness Recovery score.
+  - 90-Minute Ultradian Sleep Cycle calculator.
+- **Sleep Clock & Procedural Audio Synthesizer**: Built-in Pink Noise, Brown Noise, Rain, and Ocean Wave generators synthesized directly via Web Audio API (0 network audio files).
+- **Multi-User Profile System**: Switch between user profiles with independent goals, sleep logs, and isolated local storage.
+- **Date Manipulation & History**: Direct calendar picker to navigate and log any historical date, 4-week calendar score heatmap, and lifestyle habit correlations (Caffeine, Alcohol, Reading, etc.).
+- **100% Private & Local-First**: Zero cloud dependencies, offline PWA support, 1-click JSON backup/restore, and CSV export.
 
 ---
 
-## 🚀 Getting Started
+## 📖 Documentation
 
-### Local Development
+For full architectural details, mathematical formulas, and feature breakdowns, see **[DOCUMENTATION.md](./DOCUMENTATION.md)**.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Local Development
 
 ```bash
-# 1. Install dependencies
+# Clone the repository
+git clone https://github.com/ben-bacs/Sleep-Tracker.git
+cd Sleep-Tracker
+
+# Install dependencies
 npm install
 
-# 2. Start local development server
+# Start development server
 npm run dev
 
-# 3. Build static production distribution
+# Build production bundle
 npm run build
 ```
 
 ---
 
-## 🌐 Deploy to GitHub Pages (100% Free)
+### 2. Free GitHub Pages Deployment
 
-1. Push this repository to GitHub.
-2. In your repository on GitHub, navigate to **Settings** > **Pages**.
-3. Under **Build and deployment** > **Source**, select **GitHub Actions**.
-4. The workflow in `.github/workflows/deploy.yml` will automatically build and deploy the app to your GitHub Pages URL:
-   `https://<your-username>.github.io/Sleep-Tracker/`
+1. Push your repository to GitHub:
+   ```bash
+   git push -u origin main
+   ```
+2. In your repository on GitHub:
+   - Go to **Settings** > **Pages**.
+   - Under **Build and deployment** > **Source**, select **GitHub Actions**.
+3. GitHub Actions will automatically build and publish your app at:
+   `https://<YOUR_GITHUB_USERNAME>.github.io/Sleep-Tracker/`
 
+---
+
+## 📄 License
+Open-source under the MIT License.
