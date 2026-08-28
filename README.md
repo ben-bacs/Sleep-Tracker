@@ -56,3 +56,4 @@ npm run build
 3. Under **Build and deployment** > **Source**, select **GitHub Actions**.
 4. The workflow in `.github/workflows/deploy.yml` will automatically build and deploy the app to your GitHub Pages URL:
    `https://<your-username>.github.io/Sleep-Tracker/`
+
