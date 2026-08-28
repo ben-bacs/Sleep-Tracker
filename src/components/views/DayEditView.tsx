@@ -9,6 +9,7 @@ import {
 
 interface DayEditViewProps {
   editingSession: SleepSession | null;
+  targetDate?: string;
   settings: UserSettings;
   onSaveSession: (session: SleepSession) => void;
   onDeleteSession: (sessionId: string) => void;
@@ -18,6 +19,7 @@ interface DayEditViewProps {
 
 export const DayEditView: React.FC<DayEditViewProps> = ({
   editingSession,
+  targetDate,
   settings,
   onSaveSession,
   onDeleteSession,
@@ -25,7 +27,7 @@ export const DayEditView: React.FC<DayEditViewProps> = ({
   onClose
 }) => {
   const [date, setDate] = useState(
-    editingSession ? editingSession.date : new Date().toISOString().split('T')[0]
+    editingSession ? editingSession.date : (targetDate || new Date().toISOString().split('T')[0])
   );
   const [bedtimeTime, setBedtimeTime] = useState('23:28');
   const [wakeTimeTime, setWakeTimeTime] = useState('06:51');
@@ -39,7 +41,7 @@ export const DayEditView: React.FC<DayEditViewProps> = ({
   const [wakeMood, setWakeMood] = useState<1 | 2 | 3 | 4 | 5>(editingSession?.wakeMood || 4);
   const [notes, setNotes] = useState(editingSession?.notes || '');
 
-  // Initialize from editingSession if present
+  // Initialize from editingSession or targetDate if present
   useEffect(() => {
     if (editingSession) {
       setDate(editingSession.date);

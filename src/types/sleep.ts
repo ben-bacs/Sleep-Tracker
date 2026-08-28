@@ -87,3 +87,14 @@ export interface TagCorrelation {
   impact: 'positive' | 'negative' | 'neutral';
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  avatarEmoji: string;
+  targetSleepHours: number;
+  baselineRHR: number;
+  targetBedtime: string;
+  targetWakeTime: string;
+  createdAt: string;
+}
+
